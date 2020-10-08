@@ -62,22 +62,33 @@ class DotNode:
 
     def attr_to_str(self):
         """to_str"""
-        return "    " * self.level + self.id + "[" + "label=" + self.label + "]"
+        return self.id + "[" + "label=" + self.label + "]"
 
     def link_to_str(self):
         """to_str"""
         if self.has_children():
-            return " -- " + "{" + ",".join(self.children_ids) + "}"
+            return "    " * self.level + self.id+" -- " + "{" + ",".join(self.children_ids) + "}"
         else:
             return ""
 
-    def to_str(self):
-        """to_str"""
-        tmpstr = self.attr_to_str() + self.link_to_str() + "\n"
+    def def_str(self):
+        """def_str
+        """
+        tmpstr = self.attr_to_str() + "\n"
         for node in self.children:
-            tmpstr += node.to_str()
-
+            tmpstr += node.def_str()
         return tmpstr
+
+    def link_str(self):
+        """def_str
+        """
+        if self.has_children():
+            tmpstr = self.link_to_str() + "\n"
+            for node in self.children:
+                tmpstr += node.link_str()
+            return tmpstr
+        else:
+            return ""
 
 
 class DotData:
@@ -113,12 +124,19 @@ class DotData:
 
     def to_str(self):
         """to_str"""
+        def_str = ""
+        link_str = ""
         for node in self.nodes:
-            print(node.to_str())
+            def_str += node.def_str() + "\n"
+            link_str += node.link_str()
+        return def_str + link_str
+
+
+def tran_yaml_str2dot_str(yaml_str):
+    yaml_obj = yaml.load(yaml_str)
+    dd = DotData(yaml_obj)
+    return dd.to_str()
 
 
 if __name__ == "__main__":
-    obj_yaml = yaml.load(yamlstr)
-    dd = DotData(obj_yaml)
-
-    print(dd.to_str())
+    print(tran_yaml_str2dot_str(yamlstr))
