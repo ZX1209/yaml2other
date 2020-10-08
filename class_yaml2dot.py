@@ -62,7 +62,7 @@ class DotNode:
 
     def attr_to_str(self):
         """to_str"""
-        return self.id + "[" + "label=" + self.label + "]"
+        return "    " * self.level+self.id + "[" + "label=" + self.label + "]"
 
     def link_to_str(self):
         """to_str"""
